@@ -14,51 +14,51 @@ spec:
         app: springboot-app
     spec:
       containers:
-        - name: springboot-app
-          image: "stazdx/otel-springboot-prometheus"
-          imagePullPolicy: Always
-          ports:
-            - name: http
-              containerPort: 8080
-              protocol: TCP
-            - name: actuator
-              containerPort: 8081
-              protocol: TCP
-          readinessProbe:
-            httpGet:
-              path: /actuator/health/readiness
-              port: 8081
-          livenessProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8081
-          startupProbe:
-            httpGet:
-              path: /actuator/health/liveness
-              port: 8081
-            periodSeconds: 5
-            failureThreshold: 30
-          env:
-            - name: SERVER_PORT
-              value: '8080'
-            - name: MANAGEMENT_SERVER_PORT
-              value: '8081'
-            # Setting OTEL_EXPORTER_METRICS: none - Default: OTLP
-            - name: OTEL_METRICS_EXPORTER
-              value: none
-            - name: OTEL_TRACES_EXPORTER
-              value: otlp,logging
-            # Setting Tempo Distributor Service using GRPC Port -> 4317
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: http://tempo-tempo-distributed-distributor.observability.svc.cluster.local:4317
-            - name: OTEL_SERVICE_NAME
-              value: springboot-app
-            - name: KUBE_POD_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: OTEL_RESOURCE_ATTRIBUTES
-              value: app=springboot-app
+      - name: springboot-app
+        image: "stazdx/otel-springboot-prometheus"
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        - name: actuator
+          containerPort: 8081
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8081
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+        startupProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8081
+          periodSeconds: 5
+          failureThreshold: 30
+        env:
+        - name: SERVER_PORT
+          value: '8080'
+        - name: MANAGEMENT_SERVER_PORT
+          value: '8081'
+        # Setting OTEL_EXPORTER_METRICS: none - Default: OTLP
+        - name: OTEL_METRICS_EXPORTER
+          value: none
+        - name: OTEL_TRACES_EXPORTER
+          value: otlp,logging
+        # Setting Tempo Distributor Service using GRPC Port -> 4317
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: http://tempo-distributor.observability.svc.cluster.local:4317
+        - name: OTEL_SERVICE_NAME
+          value: springboot-app
+        - name: KUBE_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: app=springboot-app
 ---
 apiVersion: v1
 kind: Service
@@ -74,14 +74,14 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - name: http
-      port: 8080
-      targetPort: http
-      protocol: TCP
-    - name: actuator
-      port: 8081
-      targetPort: actuator
-      protocol: TCP
+  - name: http
+    port: 8080
+    targetPort: http
+    protocol: TCP
+  - name: actuator
+    port: 8081
+    targetPort: actuator
+    protocol: TCP
   selector:
     app: springboot-app
 ---
