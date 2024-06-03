@@ -10,15 +10,14 @@ queryFrontend:
   service:
     type: ClusterIP
     annotations: {}
-      # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-      # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-      # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    # service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    # service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "tcp"
 config: |
   query_frontend:
     search:
       max_duration: 0
   multitenancy_enabled: false
-  search_enabled: true
   compactor:
     compaction:
       block_retention: 1440h
@@ -42,7 +41,7 @@ config: |
             endpoint: 0.0.0.0:4317
   querier:
     frontend_worker:
-      frontend_address: tempo-tempo-distributed-query-frontend-discovery:9095
+      frontend_address: tempo-query-frontend:9095
   ingester:
     lifecycler:
       ring:
@@ -53,7 +52,7 @@ config: |
   memberlist:
     abort_if_cluster_join_fails: false
     join_members:
-      - tempo-tempo-distributed-gossip-ring
+      - tempo-gossip-ring
   server:
     http_listen_port: 3100
     log_level: info
