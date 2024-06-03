@@ -41,4 +41,4 @@ spec:
         imagePullPolicy: IfNotPresent
         name: minio
         command: ["sh"]
-        args: ["-euc", "mkdir -p /data/tempo && /opt/bin/minio server /data --console-address ':9001'"]
+        args: ["-euc", "mkdir -p /data/tempo && /usr/bin/minio server /data --console-address ':9001'"]
